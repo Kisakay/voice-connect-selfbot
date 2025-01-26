@@ -12,13 +12,18 @@ let clients = [];
 
 function configParser(str) {
     str.split("\n").forEach(line => {
-        let [token, channel_id, status] = line.split(":");
+        let [token, channel_id, status, muted, deafen, camera] = line.split(":");
 
         configs.push
             ({
                 discord_token: token,
                 voice_channel_id: channel_id,
-                status: status
+                status: status,
+                config: {
+                    selfMute: muted === "yes" ? true : false,
+                    selfDeaf: deafen === "yes" ? true : false,
+                    selfVideo: camera === "yes" ? true : false,
+                }
             });
     });
 
@@ -27,7 +32,7 @@ function configParser(str) {
 
 configParser(fs.readFileSync("tokens.txt", "utf-8"));
 
-for (let client1 of configs) {
+for (let client of configs) {
     const self = new Client();
 
     self.on("ready", () => {
@@ -35,18 +40,18 @@ for (let client1 of configs) {
 
         logger.legacy(consolePrefix.prefix_ok + `Logged in as ${self.user.tag}`);
 
-        const channel = self.channels.cache.get(client1.voice_channel_id);
+        const channel = self.channels.cache.get(client.voice_channel_id);
 
-        self.user.setStatus(client1.status);
+        self.user.setStatus(client.status);
         if (!channel) {
             logger.err(consolePrefix.prefix_error + " " + self.user.id + " Voice channel not found.");
             return;
         }
 
         self.voice.joinChannel(channel.id, {
-            selfDeaf: true,
-            selfMute: true,
-            selfVideo: true,
+            selfDeaf: client.config.selfDeaf,
+            selfMute: client.config.selfMute,
+            selfVideo: client.config.selfVideo,
         }).then(() => {
             logger.legacy(consolePrefix.prefix_ok + " " + self.user.id + " Connected to voice channel.");
         }).catch(console.error);
@@ -56,15 +61,15 @@ for (let client1 of configs) {
             if (channel.members.filter(member => member.id === self.user.id).size === 0) {
                 // reconnect to the voice channel
                 self.voice.joinChannel(channel.id, {
-                    selfDeaf: true,
-                    selfMute: true,
-                    selfVideo: true,
+                    selfDeaf: client.config.selfDeaf,
+                    selfMute: client.config.selfMute,
+                    selfVideo: client.config.selfVideo,
                 }).catch(console.error);
             }
         }, 1000);
     });
 
-    self.login(client1.discord_token)
+    self.login(client.discord_token)
 }
 
 process.on("SIGINT", () => {
