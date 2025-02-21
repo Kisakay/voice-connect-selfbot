@@ -12,7 +12,7 @@ let clients = [];
 
 function configParser(str) {
     str.split("\n").forEach(line => {
-        let [token, channel_id, status, muted, deafen, camera] = line.split(":");
+        let [token, channel_id, status, muted, deafen, camera, stream] = line.split(":");
 
         configs.push
             ({
@@ -23,6 +23,7 @@ function configParser(str) {
                     selfMute: muted === "yes" ? true : false,
                     selfDeaf: deafen === "yes" ? true : false,
                     selfVideo: camera === "yes" ? true : false,
+                    selfStream: stream === "yes" ? true : false,
                 }
             });
     });
@@ -52,7 +53,8 @@ for (let client of configs) {
             selfDeaf: client.config.selfDeaf,
             selfMute: client.config.selfMute,
             selfVideo: client.config.selfVideo,
-        }).then(() => {
+        }).then(async (c) => {
+            if (client.config.selfStream) await c.createStreamConnection();
             logger.legacy(consolePrefix.prefix_ok + " " + self.user.id + " Connected to voice channel.");
         }).catch(console.error);
 
@@ -64,7 +66,12 @@ for (let client of configs) {
                     selfDeaf: client.config.selfDeaf,
                     selfMute: client.config.selfMute,
                     selfVideo: client.config.selfVideo,
-                }).catch(console.error);
+                })
+                    .then(async (c) => {
+                        if (client.config.selfStream) await c.createStreamConnection();
+                        logger.legacy(consolePrefix.prefix_ok + " " + self.user.id + " Reconnected to voice channel.");
+                    })
+                    .catch(console.error);
             }
         }, 1000);
     });

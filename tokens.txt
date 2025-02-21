@@ -1,1 +1,1 @@
-Token:voice channel id:online/dnd/idle/invisible:no:no:yes
+Token:voice channel id:online/dnd/idle/invisible:no:no:yes:yes
