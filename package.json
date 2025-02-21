@@ -1,7 +1,7 @@
 {
   "dependencies": {
-    "discord.js-selfbot-v13": "^3.4.6",
-    "ihorizon-tools": "^1.4.2"
+    "discord.js-selfbot-v13": "^3.6.0",
+    "ihorizon-tools": "^1.4.3"
   },
   "type": "module"
 }
