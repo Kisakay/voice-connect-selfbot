@@ -1,0 +1,11 @@
+[
+    {
+        "token": "token",
+        "voiceChannelId": "voice channel id",
+        "status": "online | dmd | idle | invisible",
+        "selfStream": true,
+        "selfMute": true,
+        "selfDeaf": true,
+        "selfVideo": true 
+    }
+]
