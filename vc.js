@@ -1,4 +1,3 @@
-import { logger } from "ihorizon-tools";
 import { pathToFileURL } from "node:url";
 import tokens from "./tokens.json" with { type: "json" };
 import { JoinVC } from "./module.ts";
@@ -7,6 +6,15 @@ const consolePrefix = {
 	ok: "[OK]",
 	error: "[ERR]",
 	info: "[INFO]",
+};
+
+const logger = {
+	legacy(message, ...optionalParams) {
+		console.log(message, ...optionalParams);
+	},
+	err(message, ...optionalParams) {
+		console.error(message, ...optionalParams);
+	},
 };
 
 const connections = new Map();

@@ -1,11 +1,15 @@
 {
   "dependencies": {
-    "debug": "^4.4.3",
-    "ihorizon-tools": "^1.9.0",
     "ws": "^8.18.3"
   },
   "type": "module",
   "name": "voice-connect-selfbot",
+  "author": {
+    "email": "anais.saraiva@ihorizon.org",
+    "name": "Anaïs Saraiva",
+    "url": "https://kisakay.com"
+  },
+  "homepage": "https://github.com/Kisakay/voice-connect-selfbot",
   "private": true,
   "main": "vc.js",
   "scripts": {
