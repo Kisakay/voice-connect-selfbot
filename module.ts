@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import WebSocket from "ws";
+import logger from "./ihorizon-tools/logger.ts";
 
 const API_BASE_URL = "https://discord.com/api/v10";
 const GATEWAY_URL = "wss://gateway.discord.gg/?v=10&encoding=json";
@@ -135,7 +136,7 @@ class JoinVC {
 
 	private log(message: string): void {
 		const userId = this.currentUser?.id ? ` ${this.currentUser.id}` : "";
-		console.log(`[JoinVC]${userId} ${message}`);
+		logger.log(`[JoinVC]${userId} ${message}`);
 	}
 
 	private async api<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -517,7 +518,7 @@ class JoinVC {
 				const data = JSON.parse(event.data.toString()) as GatewayPayload;
 				this.handleGatewayMessage(data);
 			} catch (error) {
-				console.error("[JoinVC] Failed to parse gateway payload:", error);
+				logger.err("[JoinVC] Failed to parse gateway payload:", error);
 			}
 		};
 
@@ -535,7 +536,7 @@ class JoinVC {
 		};
 
 		this.ws.onerror = (error) => {
-			console.error("[JoinVC] Gateway error:", error);
+			logger.err("[JoinVC] Gateway error:", error);
 		};
 	}
 

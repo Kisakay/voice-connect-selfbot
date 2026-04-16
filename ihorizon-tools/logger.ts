@@ -20,7 +20,7 @@
 */
 
 import { log as _ } from 'console';
-import "./colors.js";
+import "./colors.ts";
 
 type LoggerMessageType = any;
 interface Logger {
@@ -31,12 +31,13 @@ interface Logger {
     returnLog: (message: LoggerMessageType, ...optionalParams: any[]) => string;
 }
 
-enum LogLevel {
-    LOG = 'LOG',
-    WARN = 'WRN',
-    ERROR = 'ERR',
-    LEGACY = 'LEG'
-}
+const LogLevel = Object.freeze({
+    LOG: 'LOG',
+    WARN: 'WRN',
+    ERROR: 'ERR',
+    LEGACY: 'LEG'
+});
+type LogLevelValue = (typeof LogLevel)[keyof typeof LogLevel];
 
 function getCurrentTime(): string {
     const now = new Date();
@@ -54,7 +55,7 @@ function getCurrentTime(): string {
     return `${timestamp}`;
 }
 
-function formatMessage(level: LogLevel, message: any, ...optionalParams: any[]): string {
+function formatMessage(level: LogLevelValue, message: any, ...optionalParams: any[]): string {
     const timestamp = getCurrentTime();
     const prefix = `[${timestamp} ${level}]:`;
 
@@ -69,7 +70,7 @@ function formatMessage(level: LogLevel, message: any, ...optionalParams: any[]):
     return coloredPrefix + ' ' + messageStr + paramsStr;
 }
 
-function applyColorToPrefix(prefix: string, level: LogLevel): string {
+function applyColorToPrefix(prefix: string, level: LogLevelValue): string {
     switch (level) {
         case LogLevel.LOG:
             return prefix.green;

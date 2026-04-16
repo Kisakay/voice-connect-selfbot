@@ -1,21 +1,7 @@
 import { pathToFileURL } from "node:url";
 import tokens from "./tokens.json" with { type: "json" };
 import { JoinVC } from "./module.ts";
-
-const consolePrefix = {
-	ok: "[OK]",
-	error: "[ERR]",
-	info: "[INFO]",
-};
-
-const logger = {
-	legacy(message, ...optionalParams) {
-		console.log(message, ...optionalParams);
-	},
-	err(message, ...optionalParams) {
-		console.error(message, ...optionalParams);
-	},
-};
+import logger from "./ihorizon-tools/logger.ts";
 
 const connections = new Map();
 
@@ -38,14 +24,14 @@ async function startConnection(tokenConfig) {
 	await connection.initialize();
 	connections.set(config.token, connection);
 	logger.legacy(
-		`${consolePrefix.ok} Prepared voice gateway for channel ${config.channelId} (camera=${config.selfVideo} stream=${config.selfStream})`,
+		`Prepared voice gateway for channel ${config.channelId} (camera=${config.selfVideo} stream=${config.selfStream})`,
 	);
 
 	return connection;
 }
 
 async function shutdownAll() {
-	logger.legacy(`${consolePrefix.info} Shutting down...`);
+	logger.legacy(`Shutting down...`);
 
 	await Promise.allSettled(
 		Array.from(connections.values(), async (connection) => {
@@ -61,13 +47,13 @@ async function bootstrap() {
 		throw new Error("tokens.json is empty or invalid");
 	}
 
-	logger.legacy(`${consolePrefix.ok} Loaded ${tokens.length} configuration(s).`);
+	logger.legacy(`Loaded ${tokens.length} configuration(s).`);
 
 	const results = await Promise.allSettled(tokens.map((tokenConfig) => startConnection(tokenConfig)));
 	const failures = results.filter((result) => result.status === "rejected");
 
 	for (const failure of failures) {
-		logger.err(`${consolePrefix.error} Failed to initialize connection:`, failure.reason);
+		logger.err(`Failed to initialize connection:`, failure.reason);
 	}
 
 	if (failures.length === results.length) {
@@ -89,11 +75,11 @@ function registerProcessHandlers() {
 	});
 
 	process.on("unhandledRejection", (error) => {
-		logger.err(`${consolePrefix.error} Unhandled rejection:`, error);
+		logger.err(`Unhandled rejection:`, error);
 	});
 
 	process.on("uncaughtException", (error) => {
-		logger.err(`${consolePrefix.error} Uncaught exception:`, error);
+		logger.err(`Uncaught exception:`, error);
 	});
 }
 
