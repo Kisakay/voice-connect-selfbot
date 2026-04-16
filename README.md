@@ -3,14 +3,29 @@
 a shitty repo for shitty use
 
 ## How to use it ?
-In **`tokens.txt`** :
-```txt
-<token>:voice channel id>:<status>:<muted>:<deafen>:<camera>:<stream>
+In **`tokens.json`** :
+```json
+[
+  {
+    "token": "user token",
+    "voiceChannelId": "voice channel id",
+    "status": "online",
+    "selfMute": true,
+    "selfDeaf": true,
+    "selfVideo": false,
+    "selfStream": false
+  }
+]
 ```
-> Status can be : online, dnd, idle, invisible
-> Muted, deafen and camera is "yes" or "no"
-> Sream, "yes" or "no"
+> Status can be: online, dnd, idle, invisible
+> selfMute, selfDeaf, selfVideo and selfStream are booleans
 
 ## Requirement:
 
-- NodeJS +v18
+- NodeJS v22+ or Bun
+
+## Start
+
+```bash
+npm start
+```
